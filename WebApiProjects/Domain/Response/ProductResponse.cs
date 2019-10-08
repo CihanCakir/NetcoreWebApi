@@ -9,7 +9,7 @@ namespace WebApiProjects.Domain.Response
     {
         public Product Product { get; set; }
 
-        public ProductResponse(bool Status, string Message, Product product) : base(Status, Message)
+        private ProductResponse(bool Status, string Message, Product product) : base(Status, Message)
         {
             this.Product = product;
         }

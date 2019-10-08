@@ -14,7 +14,6 @@ namespace WebApiProjects.Domain.Response
         {
             this.Status = Status;
             this.Message = Message;
-
         }
     }
 }

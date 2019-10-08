@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace WebApiProjects.Domain.UnitOfWork
 {
-    interface  IUnitOfWork
+  public  interface  IUnitOfWork
     {
         Task CompleteAsync();
 

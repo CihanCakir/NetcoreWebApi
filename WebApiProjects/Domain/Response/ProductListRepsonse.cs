@@ -8,7 +8,7 @@ namespace WebApiProjects.Domain.Response
     public class ProductListRepsonse : BaseResponse
     {
         public IEnumerable<Product> ProductList { get; set; }
-        public ProductListRepsonse(bool Status, string Message, IEnumerable<Product> products) : base(Status, Message)
+        private ProductListRepsonse(bool Status, string Message, IEnumerable<Product> products) : base(Status, Message)
         {
             this.ProductList = products;
         }
