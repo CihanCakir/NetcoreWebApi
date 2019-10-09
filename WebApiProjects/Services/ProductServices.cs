@@ -100,7 +100,7 @@ namespace WebApiProjects.Services
 
         }
 
-        public async Task<ProductResponse> UpdateResponse(Product product, int productId)
+        public async Task<ProductResponse> UpdateProduct(Product product, int productId)
         {
             try
             {

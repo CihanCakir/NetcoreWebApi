@@ -40,6 +40,7 @@ namespace WebApiProjects.Controllers
             }
         }
         // GET Localhost : /api/Product/1
+      
         [HttpGet("{Id:int}")]
         public async Task<IActionResult> GetProduct(int Id)
         {
@@ -54,6 +55,7 @@ namespace WebApiProjects.Controllers
                 return BadRequest(product.Message);
             }
         }
+       
         [HttpPost]
         public async Task<IActionResult> AddProduct(ProductResource productResource)
         {
@@ -78,8 +80,42 @@ namespace WebApiProjects.Controllers
             }
         }
 
+        [HttpPut]
+        public async Task<IActionResult> UpdateProduct(ProductResource productResource, int Id)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.GetErrorMessages());
+            }else
+            {
+                Product product = mapper.Map<ProductResource, Product>(productResource);
+                var response = await productServices.UpdateProduct(product,Id);
 
-        public async Task<IActionResult> UpdateProduct()
+                if (response.Status)
+                {
+                    return Ok(response.Product);
+                }
+                else
+                {
+                    return BadRequest(response.Message);
+                }
+            }
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> RemoveProduct(int Id)
+        {
+            ProductResponse productResponse = await productServices.RemoveProduct(Id);
+            if (productResponse.Status)
+            {
+                return Ok(productResponse.Product);
+            }
+            else
+            {
+                return BadRequest(productResponse.Message);
+            }
+
+        }
 
     }
 }

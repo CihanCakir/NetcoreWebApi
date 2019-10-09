@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +12,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using WebApiProjects.Domain;
-
+using WebApiProjects.Domain.Repositories;
+using WebApiProjects.Domain.Services;
+using WebApiProjects.Domain.UnitOfWork;
+using WebApiProjects.Services;
 namespace WebApiProjects
 {
     public class Startup
@@ -26,6 +30,14 @@ namespace WebApiProjects
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddScoped<IProductServices, ProductServices>();
+            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+
+
             services.AddControllers();
 
             services.AddDbContext<WebApiContext>(options =>
