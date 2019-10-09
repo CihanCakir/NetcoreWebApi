@@ -48,7 +48,7 @@ namespace WebApiProjects
 
             services.AddDbContext<WebApiContext>(options =>
             {
-                options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnectionString"]);
+                options.UseSqlServer(Configuration["ConnectionString:DefaultConnectionString"]);
             });
 
 

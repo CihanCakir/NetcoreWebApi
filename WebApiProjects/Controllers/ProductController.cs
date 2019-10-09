@@ -13,7 +13,7 @@ using WebApiProjects.Domain;
 
 namespace WebApiProjects.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class ProductController : ControllerBase
     {
