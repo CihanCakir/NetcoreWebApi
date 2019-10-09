@@ -6,7 +6,7 @@ using WebApiProjects.Domain.Response;
 
 namespace WebApiProjects.Domain.Services
 {
-    interface IProductServices
+    public interface IProductServices
     {
         Task<ProductListRepsonse> ListAsync();
 

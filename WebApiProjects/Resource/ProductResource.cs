@@ -8,8 +8,11 @@ namespace WebApiProjects.Resource
 {
     public class ProductResource
     {
+        [Required]
         public string Name { get; set; }
+        [Required]
         public string Category { get; set; }
-        public string Price { get; set; }
+        [Required]
+        public decimal? Price { get; set; }
     }
 }
