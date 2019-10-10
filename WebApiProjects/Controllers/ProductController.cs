@@ -10,9 +10,11 @@ using WebApiProjects.Domain.Response;
 using WebApiProjects.Resource;
 using WebApiProjects.Extension;
 using WebApiProjects.Domain;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApiProjects.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductController : ControllerBase
@@ -24,6 +26,7 @@ namespace WebApiProjects.Controllers
             this.mapper = mapper;
             this.productServices = productServices;
         } 
+       
         [HttpGet]
         public async Task<IActionResult> GetList()
         {
@@ -39,7 +42,6 @@ namespace WebApiProjects.Controllers
                 return BadRequest(productListRepsonse.Message);
             }
         }
-        // GET Localhost : /api/Product/1
       
         [HttpGet("{Id:int}")]
         public async Task<IActionResult> GetProduct(int Id)

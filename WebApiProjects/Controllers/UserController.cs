@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WebApiProjects.Domain.Response;
 using WebApiProjects.Domain.Services;
 using WebApiProjects.Resource;
 
@@ -17,17 +20,32 @@ namespace WebApiProjects.Controllers
         private readonly IUserServices userServices;
         private readonly IMapper mapper;
 
-        public UserController(IUserServices userServices,IMapper mapper)
+        public UserController(IUserServices userServices, IMapper mapper)
         {
             this.mapper = mapper;
             this.userServices = userServices;
         }
-        [HttpGet]
+
+        [Authorize]
         public IActionResult GetUser()
         {
-            return Ok();
+            IEnumerable<Claim> claims = User.Claims;
+            string userId = claims.Where(x => x.Type == ClaimTypes.NameIdentifier).First().Value;
+
+            UserResponse user = userServices.FindById(int.Parse(userId));
+
+            if (user.Status)
+            {
+                return Ok(user.user);
+            }
+            else
+            {
+                return BadRequest(user.Message);
+            }
+
+
         }
-        
+        [AllowAnonymous]
         public IActionResult AddUser(UserResource userResource)
         {
             return Ok();
