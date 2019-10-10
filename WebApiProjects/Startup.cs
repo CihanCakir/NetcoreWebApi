@@ -49,7 +49,7 @@ namespace WebApiProjects
 
             services.AddControllers();
 
-
+            services.Configure<TokenOptions>(Configuration.GetSection("TokenOptions"));
             var tokenOptions = Configuration.GetSection("TokenOptions").Get<TokenOptions>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(jwtBearOptions =>
@@ -59,8 +59,10 @@ namespace WebApiProjects
                     ValidateAudience = true,
                     ValidateIssuer = true,
                     ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
                     ValidIssuer = tokenOptions.Issuer,
                     ValidAudience = tokenOptions.Audience,
+                    IssuerSigningKey = SignHandler.GetSecurityKey(tokenOptions.SecurityKey)
                 };
 
 
