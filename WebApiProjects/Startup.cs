@@ -10,12 +10,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Logging;
 using WebApiProjects.Domain;
 using WebApiProjects.Domain.Repositories;
 using WebApiProjects.Domain.Services;
 using WebApiProjects.Domain.UnitOfWork;
 using WebApiProjects.Services;
+using WebApiProjects.Security.Token;
+
 namespace WebApiProjects
 {
     public class Startup
@@ -46,6 +49,28 @@ namespace WebApiProjects
 
             services.AddControllers();
 
+
+            var tokenOptions = Configuration.GetSection("TokenOptions").Get<TokenOptions>();
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(jwtBearOptions =>
+            {
+                jwtBearOptions.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
+                {
+                    ValidateAudience = true,
+                    ValidateIssuer = true,
+                    ValidateLifetime = true,
+                    ValidIssuer = tokenOptions.Issuer,
+                    ValidAudience = tokenOptions.Audience,
+                };
+
+
+
+
+
+            });
+
+
+
             services.AddDbContext<WebApiContext>(options =>
             {
                 options.UseSqlServer(Configuration["ConnectionString:DefaultConnectionString"]);
@@ -61,7 +86,7 @@ namespace WebApiProjects
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseAuthentication();
             app.UseCors();
             app.UseRouting();
             app.UseAuthorization();

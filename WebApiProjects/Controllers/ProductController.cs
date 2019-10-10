@@ -80,7 +80,7 @@ namespace WebApiProjects.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPut("{Id:int}")]
         public async Task<IActionResult> UpdateProduct(ProductResource productResource, int Id)
         {
             if(!ModelState.IsValid)
