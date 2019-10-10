@@ -6,7 +6,7 @@ using WebApiProjects.Domain.Response;
 
 namespace WebApiProjects.Domain.Services
 {
-    interface IUserServices
+    public interface IUserServices
     {
         UserResponse AddUser(User user);
         UserResponse FindById(int userId);

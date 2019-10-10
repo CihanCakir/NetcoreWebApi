@@ -33,7 +33,10 @@ namespace WebApiProjects
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            //User.
+            services.AddScoped<IUserServices, UserServices>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            //Productç
             services.AddScoped<IProductServices, ProductServices>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
