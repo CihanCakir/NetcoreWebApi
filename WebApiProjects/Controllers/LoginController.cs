@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebApiProjects.Domain.Services;
+using WebApiProjects.Resource;
+using WebApiProjects.Extension;
+using WebApiProjects.Domain.Response;
 
 namespace WebApiProjects.Controllers
 {
@@ -19,9 +22,24 @@ namespace WebApiProjects.Controllers
             this.authenticationServices = authenticationServices;
         }
         [HttpPost]
-        public IActionResult AccesToken()
+        public IActionResult AccesToken(LoginResource loginResource)
         {
-            return Ok();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState.GetErrorMessages());
+            }
+            else
+            {
+                TokenResponse tokenResponse = authenticationServices.CreateAccessToken(loginResource.Email, loginResource.Password);
+                if (tokenResponse.Status)
+                {
+                    return Ok(tokenResponse.accessToken);
+                }
+                else
+                {
+                    return BadRequest(tokenResponse.Message);
+                }
+            }
         }
         [HttpPost]
         public IActionResult RefreshToken()
