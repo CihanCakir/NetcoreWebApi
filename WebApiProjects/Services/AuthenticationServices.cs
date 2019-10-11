@@ -38,12 +38,41 @@ namespace WebApiProjects.Services
 
         public TokenResponse CreateAccesTokenByRefreshToken(string refreshToken)
         {
-            throw new NotImplementedException();
+            UserResponse userResponse = userServices.GetUserWithRefreshToken(refreshToken);
+
+            if (userResponse.Status)
+            {
+                //User response refreshtoken end date tarihi çağrıldı tarihten küçük olması lazım bunun kontrolü için
+                if (userResponse.user.RefreshTokenEndDate < DateTime.Now)
+                {
+                    AccessToken accessToken = tokenHandler.CreateAccessToken(userResponse.user);
+
+                    return new TokenResponse(accessToken);
+                }
+                else
+                {
+                    return new TokenResponse("Oturumunuzun Süresi Dolmuştur lütfen tekrar giriş yapınız");
+                }
+            }
+            else
+            {
+                return new TokenResponse("Oturum Bulunamadı");
+            }
         }
 
         public TokenResponse RevokeRefreshToken(string refreshToken)
         {
-            throw new NotImplementedException();
+            UserResponse userResponse = userServices.GetUserWithRefreshToken(refreshToken);
+            if (userResponse.Status)
+            {
+                userServices.RemoveRefreshToken(userResponse.user);
+                return new TokenResponse(new AccessToken());
+            }
+            else
+            {
+                return new TokenResponse("Oturum kapatılması Sorun Yaşanıldı: RefreshToken Bulunamadı");
+            }
+
         }
 
         
