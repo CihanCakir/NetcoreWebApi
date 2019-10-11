@@ -38,6 +38,8 @@ namespace WebApiProjects
             services.AddScoped<IUserRepository, UserRepository>();
             //Token la karsilasmaı icin bir services ekliyoruz
             services.AddScoped<ITokenHandler, TokenHandler>();
+            //Authentication services eklenmesi
+            services.AddScoped<IAuthenticationServices, AuthenticationServices>();
             //Product
             services.AddScoped<IProductServices, ProductServices>();
             services.AddScoped<IProductRepository, ProductRepository>();
@@ -67,7 +69,8 @@ namespace WebApiProjects
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = tokenOptions.Issuer,
                     ValidAudience = tokenOptions.Audience,
-                    IssuerSigningKey = SignHandler.GetSecurityKey(tokenOptions.SecurityKey)
+                    IssuerSigningKey = SignHandler.GetSecurityKey(tokenOptions.SecurityKey),
+                    ClockSkew = TimeSpan.Zero
                 };
 
 

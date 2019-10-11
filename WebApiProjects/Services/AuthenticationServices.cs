@@ -26,6 +26,8 @@ namespace WebApiProjects.Services
             if (userResponse.Status)
             {
                 AccessToken accessToken = tokenHandler.CreateAccessToken(userResponse.user);
+
+                userServices.SaveRefreshToken(userResponse.user.Id,accessToken.RefreshToken);
                 return new TokenResponse(accessToken);
 
             }
@@ -43,9 +45,11 @@ namespace WebApiProjects.Services
             if (userResponse.Status)
             {
                 //User response refreshtoken end date tarihi çağrıldı tarihten küçük olması lazım bunun kontrolü için
-                if (userResponse.user.RefreshTokenEndDate < DateTime.Now)
+                if (userResponse.user.RefreshTokenEndDate > DateTime.Now)
                 {
                     AccessToken accessToken = tokenHandler.CreateAccessToken(userResponse.user);
+                  
+                    userServices.SaveRefreshToken(userResponse.user.Id, accessToken.RefreshToken);
 
                     return new TokenResponse(accessToken);
                 }

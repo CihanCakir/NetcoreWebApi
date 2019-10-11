@@ -42,14 +42,31 @@ namespace WebApiProjects.Controllers
             }
         }
         [HttpPost]
-        public IActionResult RefreshToken()
+        public IActionResult RefreshToken(TokenResource tokenResource)
         {
-            return Ok();
+        TokenResponse tokenResponse = authenticationServices.CreateAccesTokenByRefreshToken(tokenResource.RefreshToken);
+            if (tokenResponse.Status)
+            {
+                return Ok(tokenResponse.accessToken);
+            }
+            else
+            {
+                return BadRequest(tokenResponse.Message);
+            }
         }
         [HttpPost]
-        public IActionResult RemoveRefreshToken()
+        public IActionResult RemoveRefreshToken(TokenResource tokenResource)
         {
-            return Ok();
+            TokenResponse tokenResponse = authenticationServices.RevokeRefreshToken(tokenResource.RefreshToken);
+            if(tokenResponse.Status)
+            {
+                return Ok(tokenResponse.accessToken);
+            }
+            else
+            {
+                return BadRequest(tokenResponse.Message);
+            }
+        
         }
     }
 }

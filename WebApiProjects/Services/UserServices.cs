@@ -114,6 +114,7 @@ namespace WebApiProjects.Services
             try
             {
                 userRepository.RemoveRefreshToken(user);
+                unitOfWork.Complete();
 
             }
             catch (Exception excep)
