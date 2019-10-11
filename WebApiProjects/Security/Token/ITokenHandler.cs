@@ -6,7 +6,7 @@ using WebApiProjects.Domain;
 
 namespace WebApiProjects.Security.Token
 {
-    interface ITokenHandler
+    public interface ITokenHandler
     {
         AccessToken CreateAccessToken(User user);
 

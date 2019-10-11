@@ -7,6 +7,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WebApiProjects.Domain;
 using WebApiProjects.Domain.Response;
 using WebApiProjects.Domain.Services;
 using WebApiProjects.Resource;
@@ -27,6 +28,7 @@ namespace WebApiProjects.Controllers
         }
 
         [Authorize]
+        [HttpGet]
         public IActionResult GetUser()
         {
             IEnumerable<Claim> claims = User.Claims;
@@ -46,9 +48,22 @@ namespace WebApiProjects.Controllers
 
         }
         [AllowAnonymous]
+        [HttpPost]
         public IActionResult AddUser(UserResource userResource)
         {
-            return Ok();
+            User user = mapper.Map<UserResource,User>(userResource);
+
+            UserResponse userResponse = userServices.AddUser(user);
+
+            if (userResponse.Status)
+            {
+                return Ok(userResponse.user);
+            }
+            else
+            {
+                return BadRequest(userResponse.Message);
+            }
+
         }
     }
 }

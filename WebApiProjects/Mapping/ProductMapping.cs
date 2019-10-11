@@ -14,7 +14,8 @@ namespace WebApiProjects.Mapping
         {
             CreateMap<ProductResource, Product>();
 
-            CreateMap<Product, ProductResource>();
+            CreateMap<Product, ProductResource>()
+                .ForMember(x => x.Price, opt => opt.MapFrom(s => s.Price));
         }
     }
 }

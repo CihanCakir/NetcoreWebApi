@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -36,7 +36,9 @@ namespace WebApiProjects
             //User.
             services.AddScoped<IUserServices, UserServices>();
             services.AddScoped<IUserRepository, UserRepository>();
-            //Product�
+            //Token la karsilasmaı icin bir services ekliyoruz
+            services.AddScoped<ITokenHandler, TokenHandler>();
+            //Product
             services.AddScoped<IProductServices, ProductServices>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
