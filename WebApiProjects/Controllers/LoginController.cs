@@ -11,7 +11,7 @@ using WebApiProjects.Domain.Response;
 
 namespace WebApiProjects.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class LoginController : ControllerBase
     {
@@ -21,8 +21,12 @@ namespace WebApiProjects.Controllers
         {
             this.authenticationServices = authenticationServices;
         }
+
+
+
+
         [HttpPost]
-        public IActionResult AccesToken(LoginResource loginResource)
+        public IActionResult AccessToken(LoginResource loginResource)
         {
             if (!ModelState.IsValid)
             {
