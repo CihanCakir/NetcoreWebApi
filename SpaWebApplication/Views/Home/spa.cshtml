@@ -5,77 +5,140 @@
 
 @section Scripts
 {
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#btnSave').click(function () {
-            let name = $('#Name').val();
-            let surname = $('#SurName').val();
-            let email = $('#Email').val();
-            let password = $('#Password').val();
+    <script type="text/javascript">
+        $(document).ready(function () {
+            getUserData();
 
-            let user = { "Name": name, "Surname": surname, "Password": password, "Email": email };
-            var url = "http://localhost:59397/api/user";
-            $.ajax({
-                type: "POST",
-                crossDomain: true,
-                url: url,
-                data: JSON.stringify(user),
-                success: function (data) {
-                    console.table(data);
-                },
-                error: function (error) { console.error(error); },
-                contentType: "application/json",
-                dataType:"json"
+            $('#btnSave').click(function () {
+                let name = $('#Name').val();
+                let surname = $('#SurName').val();
+                let email = $('#Email').val();
+                let password = $('#Password').val();
+
+                let user = { "Name": name, "Surname": surname, "Password": password, "Email": email };
+                var url = "http://localhost:59397/api/user";
+                $.ajax({
+                    type: "POST",
+                    crossDomain: true,
+                    url: url,
+                    data: JSON.stringify(user),
+                    success: function (data) {
+                        console.table(data);
+                        $("#btnSave").hide();
+                    },
+                    error: function (error) { console.error(error); },
+                    contentType: "application/json",
+                    dataType: "json"
+                });
+            });
+
+            function getUserDataRefreshToken() {
+                let refreshToken = localStorage.getItem("refreshToken");
+                var url = "http://localhost:59397/api/login/refreshtoken";
+                var data = { "RefreshToken": refreshToken }
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    async: false,
+                    crossDomain: true,
+                    data: JSON.stringify(data),
+                    success: function (data) {
+                        console.table(data);
+                        localStorage.setItem("token", data.token);
+                        localStorage.setItem("refreshToken", data.refreshToken);
+                        getUserData();
+                    },
+                    error: function (error) {
+                        if ("Oturum Bulunamadı" == error.responseText || "Oturumunuzun Süresi Dolmuştur" == error.responseText ) {
+                            $("#loginDiv").show();
+                            $("#userDiv").hide();
+                        }
+                        console.log(error.responseText)
+                    },
+                    contentType: "application/json",
+                    dataType: "json"
+                })
+            }
+
+            function getUserData() {
+                let url = "http://localhost:59397/api/user";
+                let accesToken = localStorage.getItem("token");
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    async: false,
+                    crossDomain: true,
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("Authorization", "Bearer " + accesToken)
+                    },
+                    statusCode: {
+                        401: function () {
+                            getUserDataRefreshToken();
+                        },
+                        200: function () { }
+                    },
+                    success: function (data) {
+                        $("#loginDiv").hide()
+                        $("#userDiv").show().html("").append(`<table class="table"><tr><th>ID</th><th>İsmi</th><th>Soy İsmi</th><th>Email</th></tr><tr><td>${data.id}</td><td>${data.name}</td><td>${data.surname}</td><td>${data.email}</td></tr></table>`);
+                    },
+                    error: function (error) { },
+                    contentType: "application/json",
+                    dataType: "json"
+                });
+            }
+
+            $('#btnLogin').click(function () {
+                let Email = $('#Email1').val();
+                let Password = $('#Password1').val();
+                let user = { "Email": Email, "Password": Password }
+                var url = "http://localhost:59397/api/login/accesstoken";
+                $.ajax({
+                    type: "POST",
+                    crossDomain: true,
+                    url: url,
+                    data: JSON.stringify(user),
+                    success: function (data) {
+                        console.table(data);
+                        localStorage.setItem("token", data.token);
+                        localStorage.setItem("refreshToken", data.refreshToken);
+                        getUserData();
+                    },
+                    error: function (error) { console.log(error) },
+                    contentType: "application/json",
+                    dataType: "json"
+                })
             })
-        })
-        $('#btnLogin').click(function () {
-            let Email = $('#Email1').val();
-            let Password = $('#Password1').val();
-            let user = { "Email": Email, "Password": Password }
-            var url = "http://localhost:59397/api/login/accesstoken";
-            $.ajax({
-                type: "POST",
-                crossDomain: true,
-                url: url,
-                data: JSON.stringify(user),
-                success: function (data) {
-                    console.table(data);
-                    localStorage.setItem("token", data.token);
-                    localStorage.setItem("refreshToken", data.refreshToken);
-                },
-                error: function (error) { console.log(error) },
-                contentType: "application/json",
-                dataType: "json"
-            })
-        })
-    });
-</script>
+        });
+    </script>
 }
 
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6">
-                <h2>Üye Kayıt Formu</h2>
-                <form>
-                    <div class="form-group">
-                        <input type="text" class="form-control" id="Name" placeholder="İsminiz" />
-                    </div>
-                    <div class="form-group">
-                        <input type="text" class="form-control" id="SurName" placeholder="Soyİsminiz" />
-                    </div>
-                    <div class="form-group">
-                        <input type="email" class="form-control" id="Email" placeholder="Mail Adresiniz" />
-                    </div>
-                    <div class="form-group">
-                        <input type="password" class="form-control" id="Password" placeholder="Şifreniz" min="3" />
-                    </div>
-                    <button type="button" class="btn btn-primary" id="btnSave">Üye Ol</button>
-                </form>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Üye Kayıt Formu</h2>
+            <form>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="Name" placeholder="İsminiz" />
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="SurName" placeholder="Soyİsminiz" />
+                </div>
+                <div class="form-group">
+                    <input type="email" class="form-control" id="Email" placeholder="Mail Adresiniz" />
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" id="Password" placeholder="Şifreniz" min="3" />
+                </div>
+                <button type="button" class="btn btn-primary" id="btnSave">Üye Ol</button>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <div id="userDiv">
             </div>
-            <div class="col-md-6">
+            <div id="loginDiv" style="display:none;">
                 <h2>Üye Giriş Formu</h2>
                 <form>
-                 
+
                     <div class="form-group">
                         <input type="email" class="form-control" id="Email1" placeholder="Mail Adresiniz" />
                     </div>
@@ -87,3 +150,4 @@
             </div>
         </div>
     </div>
+</div>

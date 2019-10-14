@@ -55,7 +55,7 @@ namespace WebApiProjects.Services
                 }
                 else
                 {
-                    return new TokenResponse("Oturumunuzun Süresi Dolmuştur lütfen tekrar giriş yapınız");
+                    return new TokenResponse("Oturumunuzun Süresi Dolmuştur");
                 }
             }
             else
