@@ -6,8 +6,68 @@
 @section Scripts
 {
     <script type="text/javascript">
+
+
+
+
         $(document).ready(function () {
+
+            $("#GetFile").click(function () {
+                let url = 'http://localhost:59397/api/download';
+
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    data: null,
+                    success: function (data) {
+                        const blob = new Blob([data], { type: 'text/csv' });
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.setAttribute('hidden', '');
+                        a.setAttribute('href', url);
+                        a.setAttribute('download', 'motivist.csv');
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                    },
+                    error: function (err) {
+
+                    }
+
+                });
+            });
+
+
+
+
             getUserData();
+            getProduct();
+
+            function getProduct() {
+                let url = "http://localhost:59397/api/product";
+                let accessToken = localStorage.getItem("token");
+                $.ajax({
+                    type: "GET",
+                    crossDomain: true,
+                    url: url,
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("Authorization", "Bearer " + accessToken)
+                    },
+                    success: function (products) {
+                        var table = `<table class="table table-bordered"><tr><th>Id</th><th>İsim</th><th>Fiyat</th><th>Kategori</th></tr>`;
+                        $.each(products, (key, val) => {
+                            table += `<tr><td>${val.id}</td><td>${val.name}</td><td>${val.price}</td><td>${val.category}</td></tr>`
+                        })
+                        table += "</table>";
+                        $("#productDiv").html(table);
+                    },
+                    error: function (error) {
+                        $("#productDiv").html("<p>Token Sorunu lütfen tekrar deneyiniz</p>");
+                    },
+                    contentType: "application/json",
+                    dataType: "json"
+                })
+            }
 
             $('#btnSave').click(function () {
                 let name = $('#Name').val();
@@ -49,7 +109,7 @@
                         getUserData();
                     },
                     error: function (error) {
-                        if ("Oturum Bulunamadı" == error.responseText || "Oturumunuzun Süresi Dolmuştur" == error.responseText ) {
+                        if ("Oturum Bulunamadı" == error.responseText || "Oturumunuzun Süresi Dolmuştur" == error.responseText) {
                             $("#loginDiv").show();
                             $("#userDiv").hide();
                         }
@@ -115,6 +175,13 @@
 <div class="container">
     <div class="row">
         <div class="col-md-6">
+            <!--
+                   <a href="http://localhost:59397/api/download" class="btn btn-danger" target="_blank">download File</a>
+
+            -->
+            <button type="button" id="GetFile" class="btn btn-danger">Dosyayı indir </button>
+
+
             <h2>Üye Kayıt Formu</h2>
             <form>
                 <div class="form-group">
@@ -147,7 +214,12 @@
                     </div>
                     <button type="button" class="btn btn-primary" id="btnLogin">Giriş Yap</button>
                 </form>
+
             </div>
+        </div>
+    </div>
+    <div class="row">
+        <div id="productDiv">
         </div>
     </div>
 </div>
